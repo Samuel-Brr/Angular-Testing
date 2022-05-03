@@ -22,8 +22,11 @@ describe('HomeComponent', () => {
   let component:HomeComponent;
   let el: DebugElement;
   let coursesService: any;
-  let beginnerCourses;
-  let advancedCourses;
+  const beginnerCourses = setupCourses()
+      .filter(course => course.category == 'BEGINNER');
+
+    const advancedCourses = setupCourses()
+        .filter(course => course.category == 'ADVANCED');
 
   beforeEach(waitForAsync((() => {
 
@@ -43,12 +46,6 @@ describe('HomeComponent', () => {
           component = fixture.componentInstance;
           el = fixture.debugElement;
           coursesService = TestBed.inject(CoursesService);
-
-          beginnerCourses = setupCourses()
-            .filter(courses => courses.category = 'BEGINNER')
-
-          advancedCourses = setupCourses()
-            .filter(courses => courses.category = 'ADVANCED')
         })
   })));
 
