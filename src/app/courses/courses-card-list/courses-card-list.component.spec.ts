@@ -13,6 +13,13 @@ import {setupCourses} from '../common/setup-test-data';
 
 describe('CoursesCardListComponent', () => {
 
+  beforeEach(() => {
+
+    TestBed.configureTestingModule({
+      imports: [CoursesModule]
+    })
+
+  })
 
   it("should create the component", () => {
 
