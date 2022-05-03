@@ -1,9 +1,11 @@
 import { TestBed } from "@angular/core/testing";
 import { CoursesService } from "./courses.service"
 import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing"
-import { tap } from "rxjs/operators";
+import { catchError, tap } from "rxjs/operators";
 import { COURSES } from "../../../../server/db-data";
 import { Course } from "../model/course";
+import { throwError } from "rxjs";
+import { HttpErrorResponse } from "@angular/common/http";
 
 describe('CoursesService', () => {
 
@@ -97,6 +99,33 @@ describe('CoursesService', () => {
       ...changes
     });
 
+  })
+
+  it('Should give an error if update course fails', () => {
+
+    const changes: Partial<Course> = {titles: {description: 'Testing Course'}};
+
+    coursesService.saveCourse(12, changes)
+      .pipe(
+        tap(course => {
+
+          fail('The update course operation should have failed')
+
+        }),
+        catchError((error: HttpErrorResponse) => {
+          expect(error.status).toBe(500)
+          return throwError(() => {
+            new Error('boulette')
+          })
+        })
+      )
+      .subscribe()
+
+      const req = httpTestingController.expectOne('/api/courses/12');
+
+      expect(req.request.method).toEqual('PUT');
+
+      req.flush('Save course failed', {status: 500, statusText: 'Internal Server Error'})
   })
 
   afterEach(() => {
