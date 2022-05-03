@@ -3,6 +3,7 @@ import { CoursesService } from "./courses.service"
 import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing"
 import { tap } from "rxjs/operators";
 import { COURSES } from "../../../../server/db-data";
+import { Course } from "../model/course";
 
 describe('CoursesService', () => {
 
@@ -13,7 +14,7 @@ describe('CoursesService', () => {
 
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-providers: [
+      providers: [
         CoursesService
       ]
     })
@@ -69,6 +70,34 @@ providers: [
 
     req.flush(COURSES[12]);
   });
+
+
+  it('Should update the course data', () => {
+
+    const changes: Partial<Course> = {titles: {description: 'Testing Course'}};
+
+    coursesService.saveCourse(12, changes)
+      .pipe(
+        tap(course => {
+
+          expect(course.id).toBe(12, 'Incorrect course');
+
+        })
+      )
+      .subscribe()
+
+    const req = httpTestingController.expectOne('/api/courses/12');
+
+    expect(req.request.method).toEqual('PUT');
+
+    expect(req.request.body.titles.description).toEqual(changes.titles.description)
+
+    req.flush({
+      ...COURSES[12],
+      ...changes
+    });
+
+  })
 
   afterEach(() => {
 
