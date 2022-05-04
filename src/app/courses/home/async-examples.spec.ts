@@ -1,4 +1,4 @@
-import { fakeAsync, flush, tick } from "@angular/core/testing"
+import { fakeAsync, flush, flushMicrotasks, tick } from "@angular/core/testing"
 
 fdescribe('Some examples', () => {
 
@@ -20,23 +20,23 @@ fdescribe('Some examples', () => {
 
   }))
 
-  fit('Asyn test examp - plain Promise', () => {
+  fit('Asyn test examp - plain Promise', fakeAsync(() => {
 
     let test = false;
 
     console.log("Creating promise");
 
-    setTimeout(() => {
+    // setTimeout(() => {
 
-      console.log('setTimeout() first callback trigered');
+    //   console.log('setTimeout() first callback trigered');
 
-    });
+    // });
 
-    setTimeout(() => {
+    // setTimeout(() => {
 
-      console.log('setTimeout() second callback trigered');
+    //   console.log('setTimeout() second callback trigered');
 
-    });
+    // });
 
     Promise.resolve().then(() => {
 
@@ -52,10 +52,12 @@ fdescribe('Some examples', () => {
 
       })
 
+    flushMicrotasks();
+
     console.log('Running test assertions')
 
     expect(test).toBeTruthy();
 
-  })
+  }))
 
 } )
