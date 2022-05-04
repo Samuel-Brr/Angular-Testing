@@ -1,4 +1,6 @@
 import { fakeAsync, flush, flushMicrotasks, tick } from "@angular/core/testing"
+import { of } from "rxjs";
+import { tap } from "rxjs/operators";
 
 fdescribe('Some examples', () => {
 
@@ -18,7 +20,7 @@ fdescribe('Some examples', () => {
 
     expect(test).toBeTruthy();
 
-  }))
+  }));
 
   it('Asyn test examp - plain Promise', fakeAsync(() => {
 
@@ -58,9 +60,9 @@ fdescribe('Some examples', () => {
 
     expect(test).toBeTruthy();
 
-  }))
+  }));
 
-  fit('Async example - Promises + setTimeout', fakeAsync(() => {
+  it('Async example - Promises + setTimeout', fakeAsync(() => {
 
     let counter = 0;
 
@@ -85,6 +87,26 @@ fdescribe('Some examples', () => {
     flush();
 
     expect(counter).toBe(11);
-  }))
+  }));
 
+  fit('Asyn test examp - observable', () => {
+
+    let test = false;
+
+    console.log('Creating observable');
+
+    const test$ = of(test)
+
+    test$
+      .pipe(
+        tap( () => test = true )
+      )
+      .subscribe()
+
+    console.log('Running test assertions')
+
+    expect(test).toBe(true);
+
+
+  });
 } )
