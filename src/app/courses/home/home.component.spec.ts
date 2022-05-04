@@ -121,7 +121,7 @@ describe('HomeComponent', () => {
   }));
 
 //L'avantage de waitForAsync c'est qu'il supporte les requetes http (si notre test a besoins de vraiment faire appel au backend par exemple)
-  fit("should display advanced courses when tab clicked - async", waitForAsync(() => {
+  it("should display advanced courses when tab clicked - async", waitForAsync(() => {
 
     coursesService.findAllCourses.and.returnValue(of(setupCourses()));
 
