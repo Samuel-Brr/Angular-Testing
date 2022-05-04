@@ -22,32 +22,34 @@ describe('HomeComponent', () => {
   let component:HomeComponent;
   let el: DebugElement;
   let coursesService: any;
+
   const beginnerCourses = setupCourses()
       .filter(course => course.category == 'BEGINNER');
 
     const advancedCourses = setupCourses()
         .filter(course => course.category == 'ADVANCED');
 
-  beforeEach(waitForAsync((() => {
+  beforeEach(waitForAsync(() => {
 
     const coursesServiceSpy = jasmine.createSpyObj('CoursesService', ['findAllCourses'])
 
     TestBed.configureTestingModule({
-      imports: [
-        CoursesModule,
-        NoopAnimationsModule,
-      ],
-      providers: [
-        {provide: CoursesService, useValue: coursesServiceSpy}
-      ]
+        imports: [
+            CoursesModule,
+            NoopAnimationsModule
+        ],
+        providers: [
+            {provide: CoursesService, useValue: coursesServiceSpy}
+        ]
     }).compileComponents()
         .then(() => {
-          fixture = TestBed.createComponent(HomeComponent);
-          component = fixture.componentInstance;
-          el = fixture.debugElement;
-          coursesService = TestBed.inject(CoursesService);
-        })
-  })));
+            fixture = TestBed.createComponent(HomeComponent);
+            component = fixture.componentInstance;
+            el = fixture.debugElement;
+            coursesService = TestBed.get(CoursesService);
+        });
+
+  }));
 
   it("should create the component", () => {
 
@@ -93,8 +95,8 @@ describe('HomeComponent', () => {
 
   });
 
-
-  fit("should display advanced courses when tab clicked", fakeAsync(() => {
+//fakeAsync c'est bien pour écrire des test unitaire avec un code plat mais ça ne supporte pas les requetes http
+  it("should display advanced courses when tab clicked - fakeAsync", fakeAsync(() => {
 
     coursesService.findAllCourses.and.returnValue(of(setupCourses()));
 
@@ -117,6 +119,35 @@ describe('HomeComponent', () => {
     expect(cardTitles[0].nativeElement.textContent).toContain("Angular Security Course")
 
   }));
+
+//L'avantage de waitForAsync c'est qu'il supporte les requetes http (si notre test a besoins de vraiment faire appel au backend par exemple)
+  fit("should display advanced courses when tab clicked - async", waitForAsync(() => {
+
+    coursesService.findAllCourses.and.returnValue(of(setupCourses()));
+
+    fixture.detectChanges();
+
+    const tabs = el.queryAll(By.css(".mat-tab-label"));
+
+    click(tabs[1]);
+
+    fixture.detectChanges();
+
+    fixture.whenStable().then(() => {
+
+        console.log("called whenStable() ");
+
+        const cardTitles = el.queryAll(By.css('.mat-tab-body-active .mat-card-title'));
+
+        expect(cardTitles.length).toBeGreaterThan(0,"Could not find card titles");
+
+        expect(cardTitles[0].nativeElement.textContent).toContain("Angular Security Course");
+
+    });
+
+    fixture.detectChanges();
+
+}));
 
 });
 
