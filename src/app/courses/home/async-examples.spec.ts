@@ -20,7 +20,7 @@ fdescribe('Some examples', () => {
 
   }))
 
-  fit('Asyn test examp - plain Promise', fakeAsync(() => {
+  it('Asyn test examp - plain Promise', fakeAsync(() => {
 
     let test = false;
 
@@ -58,6 +58,33 @@ fdescribe('Some examples', () => {
 
     expect(test).toBeTruthy();
 
+  }))
+
+  fit('Async example - Promises + setTimeout', fakeAsync(() => {
+
+    let counter = 0;
+
+    Promise.resolve()
+      .then(() => {
+
+        counter+=10;
+
+        setTimeout(() => {
+
+          counter +=1;
+
+        }, 1000);
+      })
+
+    expect(counter).toBe(0);
+
+    flushMicrotasks();
+
+    expect(counter).toBe(10);
+
+    flush();
+
+    expect(counter).toBe(11);
   }))
 
 } )
