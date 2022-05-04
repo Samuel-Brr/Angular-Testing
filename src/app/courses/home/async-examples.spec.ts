@@ -2,7 +2,7 @@ import { fakeAsync, flush, flushMicrotasks, tick } from "@angular/core/testing"
 import { of } from "rxjs";
 import { tap } from "rxjs/operators";
 
-fdescribe('Some examples', () => {
+describe('Some examples', () => {
 
   it("Async test example - setTimeout()", fakeAsync(() => {
 
@@ -89,7 +89,7 @@ fdescribe('Some examples', () => {
     expect(counter).toBe(11);
   }));
 
-  fit('Asyn test examp - observable', () => {
+  it('Asyn test examp - observable', () => {
 
     let test = false;
 
